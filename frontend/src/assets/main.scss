@@ -1,0 +1,34 @@
+html,
+body {
+  margin: 0;
+  position: absolute;
+  overflow: hidden;
+}
+
+:root {
+  --color1: 255,59,148;
+  --color2: 229,53,133;
+}
+
+.gradient-bg {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(40deg, #181a1c, #181818);
+
+  svg {
+    display: none;
+  }
+
+  .gradients-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .bubble {
+    position: absolute;
+    background: radial-gradient(circle at center, rgba(var(--color1), 0.8) 0, rgba(var(--color2), 0) 50%) no-repeat;
+    opacity: 1;
+  }
+}
