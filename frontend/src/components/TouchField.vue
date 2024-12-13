@@ -1,6 +1,12 @@
 <template>
   <div class="gradient-bg">
-    <div ref="touchArea" class="gradients-container">
+    <div
+      class="gradients-container"
+      @touchstart.prevent="onTouchstart"
+      @touchmove="onTouchmove"
+      @touchend="onTouchend"
+      @touchcancel="onTouchcancel"
+    >
       <div
         v-for="bubble in bubblesArray"
         :key="bubble.id"
@@ -12,11 +18,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref, reactive, computed } from 'vue'
+import { reactive, computed } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 
 const clientId = uuidv4()
-const touchArea = ref(null)
 const bubbles = reactive(new Map())
 
 class Bubble {
@@ -46,44 +51,30 @@ function getTouchData(touch) {
   return { id, x, y }
 }
 
-onMounted(() => {
-  touchArea.value.addEventListener('touchstart', (e) => {
-    e.preventDefault()
-    requestAnimationFrame(() => {
-      Array.from(e.changedTouches).forEach((touch) => {
-        const { id, x, y } = getTouchData(touch)
-        bubbles.set(id, new Bubble(id, x, y))
-      })
-    })
+function onTouchstart(event) {
+  Array.from(event.changedTouches).forEach((touch) => {
+    const { id, x, y } = getTouchData(touch)
+    bubbles.set(id, new Bubble(id, x, y))
   })
+}
 
-  touchArea.value.addEventListener('touchmove', (e) => {
-    requestAnimationFrame(() => {
-      Array.from(e.changedTouches).forEach((touch) => {
-        const { id, x, y } = getTouchData(touch)
-        bubbles.get(id).update(x, y)
-      })
-    })
+function onTouchmove(event) {
+  Array.from(event.changedTouches).forEach((touch) => {
+    const { id, x, y } = getTouchData(touch)
+    bubbles.get(id).update(x, y)
   })
+}
 
-  touchArea.value.addEventListener('touchend', (e) => {
-    requestAnimationFrame(() => {
-      Array.from(e.changedTouches).forEach((touch) => {
-        const { id, x, y } = getTouchData(touch)
-        bubbles.delete(id)
-      })
-    })
+function onTouchend(event) {
+  Array.from(event.changedTouches).forEach((touch) => {
+    const { id } = getTouchData(touch)
+    bubbles.delete(id)
   })
+}
 
-  touchArea.value.addEventListener('touchcancel', (e) => {
-    requestAnimationFrame(() => {
-      Array.from(e.changedTouches).forEach((touch) => {
-        const { id, x, y } = getTouchData(touch)
-        bubbles.delete(id)
-      })
-    })
-  })
-})
+function onTouchcancel() {
+  bubbles.clear()
+}
 
 const bubblesArray = computed(() => Array.from(bubbles.values()))
 </script>
