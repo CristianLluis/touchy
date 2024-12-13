@@ -11,7 +11,6 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "hammerjs": "^2.0.8",
     "uuid": "^11.0.3",
     "vue": "^3.5.13"
   },

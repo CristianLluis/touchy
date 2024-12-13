@@ -40,32 +40,41 @@ class Bubble {
   }
 }
 
-function hammertime(event){
-  const { center: { x, y } } = event
-  const id = `${clientId}-${event.srcEvent.pointerId}`
-  console.log(event)
-  if (event.isFinal) {
-    bubbles.delete(id)
-  }
-  else if (bubbles.has(id)) {
-    bubbles.get(id).update(x, y)
-  }
-  else {
-    bubbles.set(id, new Bubble(id, x, y))
-  }
+function getTouchData(touch){
+  const id = `${clientId}-${touch.identifier}`
+  const x = touch.pageX
+  const y = touch.pageY
+  return {id, x, y}
 }
 
 onMounted(() => {
-  if (touchArea.value) {
-    const hammerManager = new Hammer.Manager(touchArea.value);
+  touchArea.value.addEventListener("touchstart", e => {
+    e.preventDefault()
+    requestAnimationFrame(()=>{
+      [...e.changedTouches].forEach(touch => {
+        const {id, x, y} = getTouchData(touch)
+        bubbles.set(id, new Bubble(id, x, y))
+      });
+    })
+  })
 
-    hammerManager.add( new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }) );
-    hammerManager.on("pan", hammertime);
-  }
+  touchArea.value.addEventListener("touchmove", e => {
+    requestAnimationFrame(()=>{
+      [...e.changedTouches].forEach(touch => {
+        const {id, x, y} = getTouchData(touch)
+        bubbles.get(id).update(x, y)
+      });
+    })
+  })
 
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-  });
+  touchArea.value.addEventListener("touchend", e => {
+    requestAnimationFrame(()=>{
+      [...e.changedTouches].forEach(touch => {
+        const {id, x, y} = getTouchData(touch)
+        bubbles.delete(id)
+      });
+    })
+  })
 });
 
 const bubblesArray = computed(() => Array.from(bubbles.values()))
