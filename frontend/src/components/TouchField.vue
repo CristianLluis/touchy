@@ -13,7 +13,6 @@
 
 <script setup>
 import { onMounted, ref, reactive, computed } from 'vue'
-import Hammer from 'hammerjs'
 import { v4 as uuidv4 } from 'uuid'
 
 const clientId = uuidv4()
@@ -31,7 +30,7 @@ class Bubble {
     this.y = y
   }
   getStyle() {
-    const size = 200;
+    const size = 200
     return {
       transform: `translate3d(${this.x - size / 2}px, ${this.y - size / 2}px, 0)`,
       width: `${size}px`,
@@ -40,43 +39,51 @@ class Bubble {
   }
 }
 
-function getTouchData(touch){
+function getTouchData(touch) {
   const id = `${clientId}-${touch.identifier}`
   const x = touch.pageX
   const y = touch.pageY
-  return {id, x, y}
+  return { id, x, y }
 }
 
 onMounted(() => {
-  touchArea.value.addEventListener("touchstart", e => {
+  touchArea.value.addEventListener('touchstart', (e) => {
     e.preventDefault()
-    requestAnimationFrame(()=>{
-      [...e.changedTouches].forEach(touch => {
-        const {id, x, y} = getTouchData(touch)
+    requestAnimationFrame(() => {
+      Array.from(e.changedTouches).forEach((touch) => {
+        const { id, x, y } = getTouchData(touch)
         bubbles.set(id, new Bubble(id, x, y))
-      });
+      })
     })
   })
 
-  touchArea.value.addEventListener("touchmove", e => {
-    requestAnimationFrame(()=>{
-      [...e.changedTouches].forEach(touch => {
-        const {id, x, y} = getTouchData(touch)
+  touchArea.value.addEventListener('touchmove', (e) => {
+    requestAnimationFrame(() => {
+      Array.from(e.changedTouches).forEach((touch) => {
+        const { id, x, y } = getTouchData(touch)
         bubbles.get(id).update(x, y)
-      });
+      })
     })
   })
 
-  touchArea.value.addEventListener("touchend", e => {
-    requestAnimationFrame(()=>{
-      [...e.changedTouches].forEach(touch => {
-        const {id, x, y} = getTouchData(touch)
+  touchArea.value.addEventListener('touchend', (e) => {
+    requestAnimationFrame(() => {
+      Array.from(e.changedTouches).forEach((touch) => {
+        const { id, x, y } = getTouchData(touch)
         bubbles.delete(id)
-      });
+      })
     })
   })
-});
+
+  touchArea.value.addEventListener('touchcancel', (e) => {
+    requestAnimationFrame(() => {
+      Array.from(e.changedTouches).forEach((touch) => {
+        const { id, x, y } = getTouchData(touch)
+        bubbles.delete(id)
+      })
+    })
+  })
+})
 
 const bubblesArray = computed(() => Array.from(bubbles.values()))
 </script>
-

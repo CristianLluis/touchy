@@ -6,8 +6,8 @@ body {
 }
 
 :root {
-  --color1: 255,59,148;
-  --color2: 229,53,133;
+  --color1: 255, 59, 148;
+  --color2: 229, 53, 133;
 }
 
 .gradient-bg {
@@ -28,7 +28,12 @@ body {
 
   .bubble {
     position: absolute;
-    background: radial-gradient(circle at center, rgba(var(--color1), 0.8) 0, rgba(var(--color2), 0) 50%) no-repeat;
+    background: radial-gradient(
+        circle at center,
+        rgba(var(--color1), 0.8) 0,
+        rgba(var(--color2), 0) 50%
+      )
+      no-repeat;
     opacity: 1;
   }
 }

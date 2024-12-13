@@ -5,4 +5,3 @@ import TouchField from './components/TouchField.vue'
 <template>
   <TouchField />
 </template>
-
