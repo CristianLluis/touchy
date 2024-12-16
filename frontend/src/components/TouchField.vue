@@ -7,12 +7,26 @@
       @touchend="onTouchend"
       @touchcancel="onTouchcancel"
     >
+      <!-- <div class="testBubble bubble"></div> -->
       <div
         v-for="bubble in bubblesArray"
         :key="bubble.id"
         :style="bubble.getStyle()"
         class="bubble"
       ></div>
+      <svg>
+        <filter id="liquid">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="20" />
+          <feColorMatrix
+            values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 1 20 -10
+          "
+          ></feColorMatrix>
+        </filter>
+      </svg>
     </div>
   </div>
 </template>
@@ -35,9 +49,11 @@ class Bubble {
     this.y = y
   }
   getStyle() {
-    const size = 200
+    const size = 100
+    const offsetX = -30 // Adjust this value to move horizontally (negative moves left)
+    const offsetY = -30 // Adjust this value to move vertically (negative moves up)
     return {
-      transform: `translate3d(${this.x - size / 2}px, ${this.y - size / 2}px, 0)`,
+      transform: `translate3d(${this.x - size / 2 + offsetX}px, ${this.y - size / 2 + offsetY}px, 0)`,
       width: `${size}px`,
       height: `${size}px`,
     }
@@ -78,3 +94,16 @@ function onTouchcancel() {
 
 const bubblesArray = computed(() => Array.from(bubbles.values()))
 </script>
+
+<style>
+.testBubble {
+  height: 100px;
+  width: 100px;
+  position: relative;
+  background: linear-gradient(45deg, #ffeb3b, #da00ff);
+  border-radius: 50%;
+  opacity: 1;
+  top: 100px;
+  left: 100px;
+}
+</style>
